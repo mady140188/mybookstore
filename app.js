@@ -1,9 +1,22 @@
-var createError = require('http-errors');
+//var createError = require('http-errors');
 var express = require('express');
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+
+var http = require('http');
 const { Client } = require('pg');
+
+//Init express app and http server
+var app = express();
+
+var server = http.createServer(app);
+
+var port = '3000';
+
+app.set('port',port);
+
+//Init postgres DB connection
 const connectionString = 'postgres://postgres:admin@localhost:5432/books';
 
 const client = new Client({
@@ -12,16 +25,17 @@ const client = new Client({
 
 client.connect();
 
+
+//Import js files in routs folder
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+/*app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+*/
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -31,12 +45,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   next(createError(404));
-});
+});*/
 
 // error handler
-app.use(function(err, req, res, next) {
+/*app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -45,5 +59,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+*/
+server.listen(port);
 
-module.exports = app;
+//module.exports = app;
