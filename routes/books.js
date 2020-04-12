@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
+//make connection to postgres DB
 const { Client } = require('pg');
 const connectionString = 'postgres://postgres:admin@localhost:5432/books';
 const client = new Client({
@@ -8,9 +10,9 @@ const client = new Client({
 client.connect();
 
 
-/* GET users listing. */
+/* GET all records from DB Table 'all_books.book_master' */
 router.get('/allbooks', function(req, res, next) {
-	client.query('SELECT * FROM all_books.book_master',[0],
+	client.query('SELECT * FROM all_books.book_master',
 	function(err, result){
 		if(err){
 			console.log(err);
@@ -18,10 +20,9 @@ router.get('/allbooks', function(req, res, next) {
 		}else{
 			res.status(200).send(result.rows);	
 		}
-
-		
+		//client.end()		
 	});
-  //res.send('Will get all books');
+
 });
 
 module.exports = router;

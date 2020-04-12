@@ -5,7 +5,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 
 var http = require('http');
-const { Client } = require('pg');
 
 //Init express app and http server
 var app = express();
@@ -15,15 +14,6 @@ var server = http.createServer(app);
 var port = '3000';
 
 app.set('port',port);
-
-//Init postgres DB connection
-const connectionString = 'postgres://postgres:admin@localhost:5432/books';
-
-const client = new Client({
-	connectionString: connectionString
-});
-
-//client.connect();
 
 
 //Import js files in routs folder
@@ -61,6 +51,12 @@ app.use('/books', bookRouter);
   res.render('error');
 });
 */
-server.listen(port);
+server.listen(port, function(err){
+	if(err){
+		console.log(err);
+	}
+
+	console.log('Server listening on PORT:::'+port);
+});
 
 //module.exports = app;
