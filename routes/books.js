@@ -23,15 +23,16 @@ router.get('/allbooks', function(req, res, next) {
 		}else{
 			res.status(200).send(result.rows);	
 		}
-		//client.end()
-		next();		
+		//client.end()	
 	});
 
 });
 
 /*POST call to insert data in bookmaster*/
 router.post('/addbookmaster',function(req,res,next){
-	if(req.body !== null && typeof req.body == 'object'){
+		if(req.body == null || typeof req.body != 'object'){
+			res.status(400).send("Invalid request body");
+		}
 		let reqKeys =[];
 		let reqValues = [];
 		for(key in req.body){
@@ -39,11 +40,14 @@ router.post('/addbookmaster',function(req,res,next){
 			reqValues.push(req.body[key]);
 		}
 		let queryString = 'INSERT INTO all_books.book_master('+reqKeys[0]+', '+reqKeys[1]+', '+reqKeys[2]+', '+reqKeys[3]+') VALUES ('+'\''+reqValues[0]+'\', \''+reqValues[1]+'\', \''+reqValues[2]+'\', \''+reqValues[3]+'\');';
-		res.status(200).send(queryString);
-	}else{
-		res.status(400).send("Invalid request body");
-	}
-
+		
+		client.query(queryString,function(err, result){
+			if(err){
+				res.status(400).send(err.detail);
+			}else{
+				res.status(200).send("Book added successfully");
+			}
+		});
 });
 
 module.exports = router;
