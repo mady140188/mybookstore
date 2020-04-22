@@ -28,6 +28,22 @@ router.get('/allbooks', function(req, res, next) {
 
 });
 
+/*GET book buy book_id from book_master table*/
+router.get('/getbook/:bookId', function(req, res){
+	
+	let bookQuery = "SELECT * FROM all_books.book_master WHERE book_id=\'"+req.params.bookId+"\'";
+	
+	client.query(bookQuery, function(err, result){
+		if(err){
+			res.status(400).send(err.detail);
+		}else{
+			res.status(200).send(result.rows);
+
+		}
+
+	})
+});
+
 /*POST call to insert data in bookmaster*/
 router.post('/addbookmaster',function(req,res,next){
 		if(req.body == null || typeof req.body != 'object'){
@@ -75,6 +91,20 @@ router.post('/addbookmaster-bulk', function(req,res,next){
 			res.status(201).send("Bulk Books Added successfully");
 		}
 	});
+});
+
+/*Delete query to delete records from book_master*/
+router.delete('/deleteBook/:bookId', function(req, res){
+
+	let delQuery = "DELETE FROM all_books.book_master WHERE book_id=\'"+req.params.bookId+"\'";
+
+	client.query(delQuery, function(err, result){
+		if(result.rowCount == 0){
+			res.status(400).send("Book Id not present in Database");
+		}else{
+			res.status(200).send("Book deleted successfully");
+		}
+	})
 });
 
 module.exports = router;
