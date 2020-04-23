@@ -1,20 +1,21 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+const dbUtils = require('../utils/db_utils.js');
+
 
 router.use(bodyParser.json());
 
 //make connection to postgres DB
 const { Client } = require('pg');
-const connectionString = 'postgres://postgres:admin@localhost:5432/books';
 const client = new Client({
-	connectionString: connectionString
+	connectionString: dbUtils.pgConnectionString
 });
 client.connect();
 
 
 /* GET all records from DB Table 'all_books.book_master' */
-router.get('/allbooks', function(req, res, next) {
+router.get('/getbooks', function(req, res, next) {
 	client.query('SELECT * FROM all_books.book_master',
 	function(err, result){
 		if(err){
@@ -45,7 +46,7 @@ router.get('/getbook/:bookId', function(req, res){
 });
 
 /*POST call to insert data in bookmaster*/
-router.post('/addbookmaster',function(req,res,next){
+router.post('/addbook',function(req,res,next){
 		if(req.body == null || typeof req.body != 'object'){
 			res.status(400).send("Invalid request body");
 		}
@@ -67,7 +68,7 @@ router.post('/addbookmaster',function(req,res,next){
 });
 
 /* POST bulk insert into bookmaster table*/
-router.post('/addbookmaster-bulk', function(req,res,next){
+router.post('/addbooks', function(req,res,next){
 	if(req.body == null || !Array.isArray(req.body)){
 		res.status(400).send("Invalid Request"); 
 	}
@@ -94,7 +95,7 @@ router.post('/addbookmaster-bulk', function(req,res,next){
 });
 
 /*Delete query to delete records from book_master*/
-router.delete('/deleteBook/:bookId', function(req, res){
+router.delete('/deletebook/:bookId', function(req, res){
 
 	let delQuery = "DELETE FROM all_books.book_master WHERE book_id=\'"+req.params.bookId+"\'";
 
