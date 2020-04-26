@@ -108,4 +108,41 @@ router.delete('/deletebook/:bookId', function(req, res){
 	})
 });
 
+/*Update single book in book_master*/
+router.patch('/updatebook/:bookId', function(req, res){
+	if(req.body == null || !(typeof req.body == 'object')){
+		res.status(400).send("Invalid Requset");
+	}
+
+let valueStr = "";
+	for(let key in req.body){
+
+		if(key == 'book_author'){
+			valueStr += "book_author=\'"+req.body[key]+"\', ";
+		}
+
+		if(key == 'book_name'){
+			valueStr += "book_name=\'"+req.body[key]+"\', ";
+		}
+
+		if(key == 'book_price'){
+			valueStr += "book_price=\'"+req.body[key]+"\', ";
+		}
+	}
+
+	valueStr  = valueStr.substring(0, valueStr.length - 2);
+	
+
+	let updateQuery = "UPDATE all_books.book_master SET "+valueStr+" WHERE book_id=\'"+req.params.bookId+"\'";
+	
+	client.query(updateQuery, function(err, result){
+
+		if(result.rowCount == 0){
+			res.status(400).send("Invalid book_id");
+		}else{
+			res.status(200).send("Book Updated successfully");
+		}
+	})
+});
+
 module.exports = router;
