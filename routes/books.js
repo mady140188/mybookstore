@@ -145,4 +145,18 @@ let valueStr = "";
 	})
 });
 
+/*INSERT INTO all_books.book_purchase(
+	book_id, book_date)
+	VALUES ('40', '2020-04-29');
+	
+	WITH ins AS (
+  INSERT INTO all_books.book_master(
+	book_author, book_id, book_name, book_price)
+	VALUES ('a', '50', 'bc', '300')
+  RETURNING book_id)
+INSERT INTO all_books.book_purchase
+  (book_id, book_date)
+SELECT book_id, '2020-04-20'
+FROM ins;*/
+
 module.exports = router;
