@@ -56,8 +56,8 @@ router.post('/addbook',function(req,res,next){
 			reqKeys.push(key);
 			reqValues.push(req.body[key]);
 		}
-		let queryString = 'INSERT INTO all_books.book_master('+reqKeys[0]+', '+reqKeys[1]+', '+reqKeys[2]+', '+reqKeys[3]+') VALUES ('+'\''+reqValues[0]+'\', \''+reqValues[1]+'\', \''+reqValues[2]+'\', \''+reqValues[3]+'\');';
-		
+		let queryString = 'INSERT INTO all_books.book_master('+reqKeys[0]+', '+reqKeys[1]+', '+reqKeys[2]+', '+reqKeys[3]+', '+reqKeys[4]+', '+reqKeys[5]+') VALUES ('+'\''+reqValues[0]+'\', \''+reqValues[1]+'\', \''+reqValues[2]+'\', \''+reqValues[3]+'\', \''+reqValues[4]+'\', \''+reqValues[5]+'\');';
+		//res.send(queryString);
 		client.query(queryString,function(err, result){
 			if(err){
 				res.status(400).send(err.detail);
@@ -76,15 +76,19 @@ router.post('/addbooks', function(req,res,next){
 	let book_id = "book_id";
 	let book_name = "book_name";
 	let book_price = "book_price";
-	let queryStart = 'INSERT INTO all_books.book_master ('+book_author+', '+book_id+', '+book_name+', '+book_price+') VALUES '; 
+	let purchase_date = "purchase_date";
+	let language = "language";
+	let comma = '\',\'';
+	let queryStart = 'INSERT INTO all_books.book_master ('+book_author+', '+book_id+', '+book_name+', '+book_price+','+purchase_date+','+language+') VALUES '; 
 	let values = ""; 
 		for(let i=0;i<req.body.length;i++){
 		if(values !== ""){
 			values = values + ',';	
 		}	
-		values = values + '(\''+req.body[i][book_author]+'\', \''+req.body[i][book_id]+'\', \''+req.body[i][book_name]+'\', \''+req.body[i][book_price]+'\')';
+		values = values + '(\''+req.body[i][book_author]+comma+req.body[i][book_id]+comma+req.body[i][book_name]+comma+req.body[i][book_price]+comma+req.body[i][purchase_date]+comma+req.body[i][language]+'\')';
 	}
 	let allQuery = queryStart+values+";";
+	//res.send(allQuery);
 	client.query(allQuery, function(err, result){
 		if(err){
 			res.status(400).send(err.detail);
@@ -128,6 +132,14 @@ let valueStr = "";
 		if(key == 'book_price'){
 			valueStr += "book_price=\'"+req.body[key]+"\', ";
 		}
+
+		if(key == 'purchase_date'){
+			valueStr += "purchase_date=\'"+req.body[key]+"\', ";
+		}
+
+		if(key == 'language'){
+			valueStr += "language=\'"+req.body[key]+"\', ";
+		}
 	}
 
 	valueStr  = valueStr.substring(0, valueStr.length - 2);
@@ -145,18 +157,18 @@ let valueStr = "";
 	})
 });
 
-/*INSERT INTO all_books.book_purchase(
-	book_id, book_date)
-	VALUES ('40', '2020-04-29');
+// INSERT INTO all_books.book_purchase(
+// 	book_id, book_date)
+// 	VALUES ('40', '2020-04-29');
 	
-	WITH ins AS (
-  INSERT INTO all_books.book_master(
-	book_author, book_id, book_name, book_price)
-	VALUES ('a', '50', 'bc', '300')
-  RETURNING book_id)
-INSERT INTO all_books.book_purchase
-  (book_id, book_date)
-SELECT book_id, '2020-04-20'
-FROM ins;*/
+// 	WITH ins AS (
+//   INSERT INTO all_books.book_master(
+// 	book_author, book_id, book_name, book_price)
+// 	VALUES ('a', '50', 'bc', '300')
+//   RETURNING book_id)
+// INSERT INTO all_books.book_purchase
+//   (book_id, book_date)
+// SELECT book_id, '2020-04-20'
+// FROM ins;
 
 module.exports = router;
