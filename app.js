@@ -1,33 +1,36 @@
 
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var http = require('http');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const http = require('http');
+
 //API token
-const morgan = require('morgan'),
-jwt = require('jsonwebtoken'),
-bodyParser = require('body-parser'),
-config = require('./configurations/config');
+const morgan = require('morgan');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const config = require('./configurations/config');
+
 const ProtectedRoutes = express.Router();
 
 
 //Init express app and http server
-var app = express();
-var server = http.createServer(app);
-var port = '3000';
+const app = express();
+const server = http.createServer(app);
+const port = '3000';
 app.set('port',port);
 
 
 //API token
 app.use(morgan('dev'));
 app.set('Secret', config.secret);
+
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 
 //set up authentication
 app.post('/authenticate', function(req, res){
-
+    
   if(req.body.username === "mahendra"){
     if(req.body.password === "123"){
         const payload = {
@@ -80,14 +83,6 @@ ProtectedRoutes.use(function(req, res, next){
     //if no token
     res.json({message: "No Token Provided!!!"})
   }
-});
-
-ProtectedRoutes.get('/getproducts', function(req,res){
-
-  res.json({
-    "products": req.decoded
-  })
-
 });
 
 
